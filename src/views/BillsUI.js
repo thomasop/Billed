@@ -4,6 +4,10 @@ import LoadingPage from "./LoadingPage.js"
 
 import Actions from './Actions.js'
 
+function compareNombres(a, b) {
+  return a - b;
+}
+
 const row = (bill) => {
   return (`
     <tr>
@@ -20,7 +24,8 @@ const row = (bill) => {
   }
 
 const rows = (data) => {
-  return (data && data.length) ? data.map(bill => row(bill)).join("") : ""
+  return (data && data.length) ? data.sort((a, b) => ((new Date(a.date) < new Date(b.date)) ? 1 : -1)).map(bill => row(bill)).join("") : ""
+  
 }
 
 export default ({ data: bills, loading, error }) => {

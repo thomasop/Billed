@@ -10,6 +10,7 @@ import {localStorageMock} from "../__mocks__/localStorage.js";
 import Bills from "../containers/Bills"
 import router from "../app/Router.js";
 import userEvent from '@testing-library/user-event'
+import store from "../app/Store.js"
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -25,7 +26,7 @@ describe("Given I am connected as an employee", () => {
       window.onNavigate(ROUTES_PATH.Bills)
       await waitFor(() => screen.getByTestId('icon-window'))
       const windowIcon = screen.getByTestId('icon-window')
-      expect(windowIcon).toBeDefined()
+      expect(windowIcon.classList.contains('active-icon'))
     })
     test("Then bills should be ordered from earliest to latest", () => {
       document.body.innerHTML = BillsUI({ data: bills })
@@ -34,18 +35,11 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
-//
-//
-//
     describe("When I click on eye icon", () => {
       test("Then, I should return the image", async () => {
         const onNavigate = (pathname) => {
           document.body.innerHTML = ROUTES({ pathname })
         }
-        Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-        window.localStorage.setItem('user', JSON.stringify({
-          type: 'Employee'
-        }))
         document.body.innerHTML = BillsUI({ data: bills })
         $.fn.modal = jest.fn()
         const icon = screen.getAllByTestId('icon-eye')[0]
@@ -75,19 +69,6 @@ describe("Given I am connected as an employee", () => {
         const newPageBill = screen.getByTestId('icon-mail')
         expect(newPageBill.classList.contains('active-icon')).toBeDefined()
       })
-    })
-
-    test("Then I should see all bill", () => {
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      document.body.innerHTML = BillsUI({ data: bills })
-      const bill = new Bills({ document, onNavigate, localStorage: window.localStorage })
-      const handleAllBill = jest.fn(() => bill.getBills())
-      handleAllBill()
-      //expect(handleAllBill).toHaveBeenCalled()()
-      handleAllBill.mockReturnValue(bills)
-      expect(handleAllBill()).toBe(bills)
     })
   })
 })

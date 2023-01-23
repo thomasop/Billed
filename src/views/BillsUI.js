@@ -4,13 +4,9 @@ import LoadingPage from "./LoadingPage.js"
 
 import Actions from './Actions.js'
 
-function compareNombres(a, b) {
-  return a - b;
-}
-
 const row = (bill) => {
   return (`
-    <tr>
+    <tr data-testid="billdata">
       <td>${bill.type}</td>
       <td>${bill.name}</td>
       <td>${bill.date}</td>

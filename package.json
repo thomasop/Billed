@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest --coverage --silent=false"
+    "test": "jest"
   },
   "jest": {
     "verbose": false,

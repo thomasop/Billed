@@ -17,23 +17,30 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const input = this.document.querySelector(`input[data-testid="file"]`)
+    const file = input.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    const extFile = fileName.split(".")
-    if(extFile[extFile.length - 1] !== "jpg" && extFile[extFile.length - 1] !== "jpeg" && extFile[extFile.length - 1] !== "png") {
-      this.document.querySelector(`input[data-testid="file"]`).value = ""
-      const error = this.document.querySelector(`.error-message`)
-      error.innerText = "Format du fichier accepté"
-    } else {
-      const error = this.document.querySelector(`.error-message`)
-      error.innerText = ""
-    }
-    
+    const extFile = file.type.split("/").pop().toLowerCase()
     const formData = new FormData()
     const email = JSON.parse(localStorage.getItem("user")).email
     formData.append('file', file)
     formData.append('email', email)
+    if(extFile !== "jpg" && extFile !== "jpeg" && extFile !== "png") {
+      input.value = ""
+      const error = this.document.querySelector(`.error-message`)
+      error.innerText = "Extension du fichier accepté 'JPG, JPEG, PNG'"
+      input.classList.remove('blue-border')
+      input.classList.add('is-invalid')
+      return
+    } else {
+      const error = this.document.querySelector(`.error-message`)
+      error.innerText = ""
+    }
+    if (input.classList.contains('is-invalid')) {
+      input.classList.remove('is-invalid')
+      input.classList.add('blue-border')
+    }
 
     this.store
       .bills()
@@ -47,7 +54,8 @@ export default class NewBill {
         this.billId = key
         this.fileUrl = fileUrl
         this.fileName = fileName
-      }).catch(error => console.error(error))
+        //console.log(this)
+      }).catch(error => console.error("error"))
   }
   handleSubmit = e => {
     e.preventDefault()
@@ -79,7 +87,7 @@ export default class NewBill {
       .then(() => {
         this.onNavigate(ROUTES_PATH['Bills'])
       })
-      .catch(error => console.error(error))
+      .catch(error => console.error("error"))
     }
   }
 }
